@@ -3,7 +3,9 @@ node_modules/
 npm-debug.log
 package-lock.json
 
-
+# Python
+__pycache__/
+*.pyc
 venv/
 
 # Environment variables
@@ -13,5 +15,6 @@ venv/
 models/car_detection_model.keras
 
 # Logs
-
+logs
+*.log
 

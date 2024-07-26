@@ -6,7 +6,6 @@ package-lock.json
 # Python
 __pycache__/
 *.pyc
-venv/
 
 # Environment variables
 .env
@@ -18,5 +17,3 @@ models/car_detection_model.keras
 logs
 *.log
 
-# MacOS
-.DS_Store

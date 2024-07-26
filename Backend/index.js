@@ -9,6 +9,8 @@ import cors from "cors";
 import areaRoute from "./route/area.route.js";
 // import  codeRoute from "./route/code.route.js";
 import  verifyRoute from "./route/verify.route.js";
+import  exitRoute from "./route/exit.route.js";
+
 
 
 const app = express();
@@ -35,7 +37,7 @@ try {
  app.use("/area", areaRoute);
 //  app.use("/code", codeRoute);
  app.use("/verify", verifyRoute);
-
+ app.use("/exit", exitRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);

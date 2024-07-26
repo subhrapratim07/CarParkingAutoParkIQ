@@ -70,7 +70,7 @@ function Signup() {
               </div>
               {/* Email */}
               <div className="mt-4 space-y-2">
-                <span>Email</span>
+                <span>User-Id & Email</span>
                 <br />
                 <input
                   type="email"

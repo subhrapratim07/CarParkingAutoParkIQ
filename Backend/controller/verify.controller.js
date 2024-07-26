@@ -10,7 +10,7 @@ export const verifing = async (req, res) => {
 
         // Check if code exists in the database
         if (!codes) {
-            return res.status(400).json({ message: "Invalid code or entry date" });
+            return res.status(400).json({ message: "wrong information" });
         }
 
         // Compare the provided code with the hashed code in the database

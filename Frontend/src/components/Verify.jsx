@@ -73,7 +73,7 @@ function Verify() {
               <br />
               <input
                 type="text"
-                placeholder="Enter Entry Date"
+                placeholder="YYYY-MM-DD"
                 className="input input-bordered input-info w-full max-w-xs"
                 {...register("entrydate", { required: true })}
               />

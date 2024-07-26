@@ -1,21 +1,89 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
-// import Location from "./Location";
-// import Payment from "./Payment";
 
-function Booking() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({});
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+function Booking({ code }) {
+  const location = useLocation();
+  const selectedParking = JSON.parse(localStorage.getItem("selectedParking")) || {};
+  const [loading, setLoading] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([1, 2, 3, 4]); // All possible slots initially
+  const [formData, setFormData] = useState({
+    carnumber: "",
+    entrydate: "",
+    entrytime: "",
+    exitdate: "",
+    area: selectedParking.RoadName || "",
+    slot: "",
+    amount: selectedParking.Cost || "",
+    code: code
+  });
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      area: selectedParking.RoadName || "",
+      amount: selectedParking.Cost || ""
+    });
+  }, [selectedParking]);
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: formData
+  });
+
+  const checkSlotAvailability = async (area, slot) => {
+    try {
+      const res = await axios.get("http://localhost:4001/book/check-slot", { params: { area, slot } });
+      return res.status === 200;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const filterAvailableSlots = async () => {
+    const slots = [1, 2, 3, 4];
+    const filteredSlots = [];
+    for (const slot of slots) {
+      const isAvailable = await checkSlotAvailability(formData.area, slot);
+      if (isAvailable) {
+        filteredSlots.push(slot);
+      }
+    }
+    setAvailableSlots(filteredSlots);
+  };
+
+  useEffect(() => {
+    if (formData.area) {
+      filterAvailableSlots();
+    }
+  }, [formData.area]);
+
+  const handleDownload = (data) => {
+    const downloadData = new Blob(
+      [
+        `Car Number: ${data.carnumber}\n`,
+        `Entry Date: ${data.entrydate}\n`,
+        `Entry Time: ${data.entrytime}\n`,
+        `Exit Date: ${data.exitdate}\n`,
+        `Parking Area: ${data.area}\n`,
+        `Slot Number: ${data.slot}\n`,
+        `Amount: ${data.amount}\n`,
+        `Token Number: ${data.code}\n`,
+      ],
+      { type: "text/plain" }
+    );
+
+    const url = URL.createObjectURL(downloadData);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "booking_info.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const regInfo = {
       carnumber: data.carnumber,
       entrydate: data.entrydate,
@@ -27,47 +95,24 @@ function Booking() {
       code: data.code,
     };
 
-    setFormData(regInfo);
-
-    await axios
-      .post("http://localhost:4001/book/booking", regInfo)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          toast.success("Registration Successfully");
-          // document.getElementById("my_modal_4").close();
-          // navigate("/", { replace: true });
-        }
+    try {
+      const res = await axios.post("http://localhost:4001/book/booking", regInfo);
+      if (res.data) {
+        toast.success("Parking slot booked successful");
+        document.getElementById("my_modal_4").close();
+        document.getElementById("my_modal_7").close();
         localStorage.setItem("Users", JSON.stringify(res.data.user));
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.log(err);
-          toast.error("Error: " + err.response.data.message);
-        }
-      });
-  };
-
-  const handleDownload = () => {
-    const data = new Blob(
-      [
-        `Car Number: ${formData.carnumber}\n`,
-        `Entry Date: ${formData.entrydate}\n`,
-        `Entry Time: ${formData.entrytime}\n`,
-        `Exit Date: ${formData.exitdate}\n`,
-        `Parking Area: ${formData.area}\n`,
-        `Slot Number: ${formData.slot}\n`,
-        `Amount: ${formData.amount}\n`,
-        `Token Number: ${formData.code}\n`,
-      ],
-      { type: "text/plain" }
-    );
-    const url = URL.createObjectURL(data);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "booking_info.txt";
-    a.click();
-    URL.revokeObjectURL(url);
+        handleDownload(data);  // Call handleDownload with form data
+      }
+    } catch (err) {
+      if (err.response) {
+        toast.error("Error: " + err.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,13 +140,13 @@ function Booking() {
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("carnumber", { required: true })}
                   />
-                  <br />
                   {errors.carnumber && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
                 {/* Entry Date */}
                 <div className="mt-4 space-y-2">
                   <span>Entry Date</span>
@@ -112,13 +157,13 @@ function Booking() {
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("entrydate", { required: true })}
                   />
-                  <br />
                   {errors.entrydate && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
                 {/* Entry Time */}
                 <div className="mt-4 space-y-2">
                   <span>Entry Time</span>
@@ -129,13 +174,13 @@ function Booking() {
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("entrytime", { required: true })}
                   />
-                  <br />
                   {errors.entrytime && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
                 {/* Exit Date */}
                 <div className="mt-4 space-y-2">
                   <span>Exit Date</span>
@@ -146,13 +191,14 @@ function Booking() {
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("exitdate", { required: true })}
                   />
-                  <br />
                   {errors.exitdate && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
+                {/* Parking Area */}
                 <div className="mt-4 space-y-2">
                   <span>Parking Area</span>
                   <br />
@@ -161,30 +207,37 @@ function Booking() {
                     placeholder="Enter The Area"
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("area", { required: true })}
+                    defaultValue={formData.area}
+                    disabled
                   />
-                  <br />
                   {errors.area && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
+                {/* Parking Slot Number */}
                 <div className="mt-4 space-y-2">
                   <span>Parking Slot Number</span>
                   <br />
-                  <input
-                    type="number"
-                    placeholder="Enter The Slot Number"
-                    className="input input-bordered input-info w-full max-w-xs"
+                  <select
+                    className="select select-bordered select-info w-full max-w-xs"
                     {...register("slot", { required: true })}
-                  />
-                  <br />
+                  >
+                    <option value="">Select a Slot</option>
+                    {availableSlots.map(slot => (
+                      <option key={slot} value={slot}>{slot}</option>
+                    ))}
+                  </select>
                   {errors.slot && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
+                {/* Amount */}
                 <div className="mt-4 space-y-2">
                   <span>Amount</span>
                   <br />
@@ -193,24 +246,28 @@ function Booking() {
                     placeholder="Enter your Amount"
                     className="input input-bordered input-info w-full max-w-xs"
                     {...register("amount", { required: true })}
+                    defaultValue={formData.amount}
+                    disabled
                   />
-                  <br />
                   {errors.amount && (
                     <span className="text-sm text-red-500">
                       This field is required
                     </span>
                   )}
                 </div>
+
+                {/* Token Number */}
                 <div className="mt-4 space-y-2">
-                  <span>Tocken Number</span>
+                  <span>Token Number</span>
                   <br />
                   <input
                     type="text"
-                    placeholder="Enter Tocken Number"
+                    placeholder="Enter Token Number"
                     className="input input-bordered input-info w-full max-w-xs"
-                    {...register("code", { required: true })}
+                    {...register("code", { required: false })}
+                    value={code}
+                    disabled
                   />
-                  <br />
                   {errors.code && (
                     <span className="text-sm text-red-500">
                       This field is required
@@ -223,18 +280,11 @@ function Booking() {
                   <button
                     className="input-info w-full max-w-xs btn btn-outline btn-success"
                     type="submit"
+                    disabled={loading}
                   >
-                    Submit
-                  </button>
-                  <button
-                    type="button"
-                    className="input-info w-full max-w-xs btn btn-outline btn-info"
-                    onClick={handleDownload}
-                  >
-                    Download
+                    {loading ? "Submitting..." : "Submit"}
                   </button>
                 </div>
-                {/* <Location /> */}
               </div>
             </div>
           </form>

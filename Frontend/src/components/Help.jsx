@@ -2,6 +2,7 @@ import React from "react";
 import Cards from "./Cards";
 import Cards2 from "./Cards2";
 import Cards3 from "./Cards3";
+import Cards4 from "./Cards4";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -51,15 +52,15 @@ function Help() {
       <div className=" max-w-screen-2xl container mx-auto md:px-20 px-4">
       <div className="mt-28 items-center justify-center text-center">
           <h1 className="text-2xl  md:text-4xl">
-            We're delighted to have you{" "}
+          Experience the future of parking with SmartPark{" "}
             <span className="text-pink-500"> Here! :)</span>
           </h1>
           <p className="mt-8">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro,
-            assumenda? Repellendus, iste corrupti? Tempore laudantium
-            repellendus accusamus accusantium sed architecto odio, nisi expedita
-          
-            consequatur!
+          Our system ensures hassle-free, real-time slot availability, 
+          seamless bookings, and secure payments.
+          Say goodbye to parking stress and hello to convenience with SmartPark!
+
+
           </p>
           <Link to="/">
             <button className="mt-4 bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-700 duration-300">
@@ -76,6 +77,7 @@ function Help() {
                <Cards2 />
                <Cards />
                <Cards3 />
+               <Cards4 />
         </Slider> 
         </div>
         {/* <div className="mt-12 grid grid-cols-1 md:grid-cols-4">

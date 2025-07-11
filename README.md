@@ -50,15 +50,15 @@ git clone https://github.com/subhrapratim07/AutoParkIQ.git
 cd AutoParkIQ
 
 Start Backend
-cd backend
-npm install
-npm start
+- cd backend
+- npm install
+- npm start
 
 Run ML Python Script
-python app.py
+- python app.py
 
 Start Frontend
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- pm run dev
 

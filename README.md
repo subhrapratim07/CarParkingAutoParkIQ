@@ -60,5 +60,5 @@ Run ML Python Script
 Start Frontend
 - cd frontend
 - npm install
-- pm run dev
+- npm run dev
 

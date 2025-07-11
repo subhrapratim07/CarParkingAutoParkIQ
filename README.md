@@ -1,7 +1,7 @@
 # 🚗 AutoParkIQ – Automatic Parking Management System
 
 🎓 **Final Year Project** | Department of Computer Science  
-🔗 [Live Demo Portfolio](https://subhra-portfolio.netlify.app/)
+🔗 [Live Demo Portfolio](https://autoparkiq.netlify.app/)
 
 ---
 
@@ -44,22 +44,6 @@
 
 ---
 
-## 🖼️ System Architecture
-
-```text
-Camera Feed
-     |
-     v
-[ OpenCV + TensorFlow ML Model ]
-     |
-     v
-[ Node.js Backend API ]
-     |
-     v
-[ MongoDB ]
-     |
-     v
-[ React Web App Dashboard ]
 🛠️ How to Run Locally
 Clone the repo
 git clone https://github.com/subhrapratim07/AutoParkIQ.git
@@ -77,3 +61,4 @@ Start Frontend
 cd frontend
 npm install
 npm run dev
+

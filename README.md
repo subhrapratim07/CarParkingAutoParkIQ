@@ -30,6 +30,9 @@
 
 - 🧭 **Navigation Assistance**  
   Helps users navigate directly to their reserved parking space with minimal delay.
+## 📸 Demo
+![PetVibe AI Dashboard](Autoparkiq-demo-screenshot.png)
+*The PetVibe AI interface featuring the "Understand Your Dog Better" dashboard.*
 
 ---
 

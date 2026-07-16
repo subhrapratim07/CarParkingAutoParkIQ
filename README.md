@@ -64,4 +64,9 @@ Start Frontend
 - cd frontend
 - npm install
 - npm run dev
+  
+---
 
+## Author
+
+**Subhra Pratim Mondal** [LinkedIn](https://www.linkedin.com/in/subhra-pratim-mondal-a522352a4/) · [@subhrapratim07](https://github.com/subhrapratim07) · msubhra364@gmail.com
